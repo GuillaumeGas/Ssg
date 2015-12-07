@@ -1,0 +1,10 @@
+{% extends "::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - News{% endblock %}
+
+{% block body %}
+    <h1>News</h1>
+
+    {% block news_body %}
+    {% endblock %}
+{% endblock %}
