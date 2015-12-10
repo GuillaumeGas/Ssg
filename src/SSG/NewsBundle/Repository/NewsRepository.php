@@ -20,4 +20,9 @@ class NewsRepository extends EntityRepository
         return new Paginator($query, true);
     }
 
+    public function getNewsById($id) {
+        $query = $this->createQueryBuilder('a')->where('a.id = '.$id)->getQuery();
+        return $query->getOneOrNullResult();
+    }
+
 }

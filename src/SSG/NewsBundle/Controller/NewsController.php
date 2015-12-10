@@ -44,10 +44,15 @@ class NewsController extends Controller {
         return new Response($content);
     }
 
-    public function viewAction($id) {
+    public function viewAction(Request $request, $id) {
 
         $rep = $this->getDoctrine()->getManager()->getRepository(NEWS_REP);
-        $news = $rep->find($id);
+        $news = $rep->getNewsById($id);
+
+        if($news == null) {
+            $request->getSession()->getFlashBag()->add('error', 'This news doesn\'t exist.');
+            return $this->redirect($this->generateUrl('ssg_news_index'));
+        }
 
         $content = $this->get('templating')->render(NEWS_REP.':view.html.twig', array('news' => $news));
         return new Response($content);
@@ -84,7 +89,12 @@ class NewsController extends Controller {
     public function editAction(Request $request, $id) {
 
         $rep = $this->getDoctrine()->getManager()->getRepository(NEWS_REP);
-        $news = $rep->find($id);
+        $news = $rep->getNewsById($id);
+
+        if($news == null) {
+            $request->getSession()->getFlashBag()->add('error', 'This news doesn\'t exist.');
+            return $this->redirect($this->generateUrl('ssg_news_index'));
+        }
 
         $formBuilder = $this->createFormBuilder($news);
         $formBuilder->add('title', TextType::class)
@@ -108,13 +118,9 @@ class NewsController extends Controller {
 
         $content = $this->render(NEWS_REP.':edit.html.twig', array('form' => $form->createView()));
         return new Response($content);
-
-        $content = $this->get('templating')->render('SSGNewsBundle:News:edit.html.twig');
-        return new Response($content);
     }
 
     public function deleteAction(Request $request, $id) {
-
         $em = $this->getDoctrine()->getManager();
         $rep = $em->getRepository(NEWS_REP);
         $news = $rep->find($id);
@@ -122,8 +128,9 @@ class NewsController extends Controller {
         $em->remove($news);
         $em->flush();
 
-        $content = $this->get('templating')->render('SSGNewsBundle:News:index.html.twig');
-        return new Response($content);
+        $request->getSession()->getFlashBag()->add('notice', 'News deleted.');
+
+        return $this->redirect($this->generateUrl('ssg_news_index'));
     }
 
     public function menuAction($limit) {
