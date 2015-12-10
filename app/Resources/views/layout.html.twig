@@ -10,7 +10,7 @@
 
     {% block stylesheets %}
         {# On charge le CSS de bootstrap depuis le site directement #}
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     {% endblock %}
 </head>
 
@@ -35,6 +35,26 @@
             {{ render(controller("SSGNewsBundle:News:menu", {'limit': 3})) }}
         </div>
         <div id="content" class="col-md-9">
+            {% for message in app.session.flashbag.get('error') %}
+                <div class="alert alert-warning">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+
+
+            {% for message in app.session.flashbag.get('info') %}
+                <div class="alert alert-info">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+
+
+            {% for message in app.session.flashbag.get('notice') %}
+                <div class="alert alert-success">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+
             {% block body %}
             {% endblock %}
         </div>

@@ -15,10 +15,12 @@ use SSG\NewsBundle\Entity\Image;
 const NEWS_REP = "SSGNewsBundle:News";
 
 class NewsController extends Controller {
-    public function indexAction($page) {
+    public function indexAction(Request $request, $page) {
 
-        if($page < 1)
-            throw $this->createNotFoundException("This page doesn't exist.");
+        if($page < 1) {
+            $request->getSession()->getFlashBag()->add('error', 'This page doesn\'t exist.');
+            return new Response($this->get('templating')->render(NEWS_REP.':index.html.twig'));
+        }
 
         $nbPerPage = 2;
 
@@ -27,8 +29,10 @@ class NewsController extends Controller {
 
         $nbPages = ceil(count($listNews)/$nbPerPage);
 
-        if($page > $nbPages)
-            throw $this->createNotFoundException("This page doesn't exist.");
+        if($page > $nbPages) {
+            $request->getSession()->getFlashBag()->add('error', 'This page doesn\'t exist.');
+            return $this->redirect($this->generateUrl("ssg_news_index"));
+        }
 
         $content = $this->get('templating')->render(NEWS_REP.':index.html.twig',
             array(
@@ -123,8 +127,9 @@ class NewsController extends Controller {
     }
 
     public function menuAction($limit) {
-
-        return $this->render('SSGNewsBundle:News:menu.html.twig');
+        $rep = $this->getDoctrine()->getManager()->getRepository(NEWS_REP);
+        $listNews = $rep->getNews(1, 4);
+        return $this->render('SSGNewsBundle:News:menu.html.twig', array('listNews' => $listNews));
     }
 }
 
