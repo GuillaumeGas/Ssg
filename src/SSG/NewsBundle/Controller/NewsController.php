@@ -77,15 +77,48 @@ class NewsController extends Controller {
         return new Response($content);
     }
 
-    public function editAction($id) {
+    public function editAction(Request $request, $id) {
+
+        $rep = $this->getDoctrine()->getManager()->getRepository(NEWS_REP);
+        $news = $rep->find($id);
+
+        $formBuilder = $this->createFormBuilder($news);
+        $formBuilder->add('title', TextType::class)
+            ->add('date', DateType::class)
+            ->add('author', TextType::class)
+            ->add('content', TextareaType::class)
+            ->add('save', SubmitType::class);
+
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($news);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'News edited');
+
+            return $this->redirect($this->generateUrl('ssg_news_view', array('id' => $news->getId())));
+        }
+
+        $content = $this->render(NEWS_REP.':edit.html.twig', array('form' => $form->createView()));
+        return new Response($content);
 
         $content = $this->get('templating')->render('SSGNewsBundle:News:edit.html.twig');
         return new Response($content);
     }
 
-    public function deleteAction($id) {
+    public function deleteAction(Request $request, $id) {
 
-        $content = $this->get('templating')->render('SSGNewsBundle:News:delete.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $rep = $em->getRepository(NEWS_REP);
+        $news = $rep->find($id);
+
+        $em->remove($news);
+        $em->flush();
+
+        $content = $this->get('templating')->render('SSGNewsBundle:News:index.html.twig');
         return new Response($content);
     }
 
