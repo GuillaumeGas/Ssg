@@ -1,13 +1,15 @@
 ssg_news_index:
-    path:     /news
-    defaults: { _controller: SSGNewsBundle:News:index }
+    path:     /news/{page}
+    defaults: { _controller: SSGNewsBundle:News:index, page: 1 }
+    requirements:
+        page: \d+
 
 ssg_news_add:
     path:     /news/add
     defaults: { _controller: SSGNewsBundle:News:add }
 
 ssg_news_view:
-    path:     /news/{id}
+    path:     /news/view/{id}
     defaults: { _controller: SSGNewsBundle:News:view }
     requirements:
         id: \d+

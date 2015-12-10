@@ -1,0 +1,24 @@
+{% extends "SSGNewsBundle::layout.html.twig" %}
+
+{% block news_body %}
+    <h2>N°{{ news.id }} - {{ news.title }}</h2>
+    <h4><i>Par {{ news.author }} le {{ news.date|date('d/m/Y') }}</i></h4>
+
+    <div class="well">
+        {{ news.content }}
+    </div>
+    <p>
+        <a href="{{ path('ssg_news_index') }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Back
+        </a>
+        <a href="{{ path('ssg_news_edit', {'id': news.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-edit"></i>
+            Edit
+        </a>
+        <a href="{{ path('ssg_news_delete', {'id': news.id}) }}" class="btn btn-danger">
+            <i class="glyphicon glyphicon-trash"></i>
+            Delete
+        </a>
+    </p>
+{% endblock %}

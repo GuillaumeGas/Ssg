@@ -1,1 +1,17 @@
 {% extends "SSGNewsBundle::layout.html.twig" %}
+
+{% block news_body %}
+    {% for news in listNews %}
+        <div class="well">
+            <h4><a href="{{ path('ssg_news_view', {'id': news.id}) }}">{{ news.title }}</a></h4>
+            {{ news.content }}
+        </div>
+    {% endfor %}
+    <ul class="pagination">
+        {% for p in range(1, nbPages) %}
+            <li {% if p == page %}class="active"{% endif %}>
+                <a href="{{ path('ssg_news_index', {'page': p}) }}">{{ p }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
