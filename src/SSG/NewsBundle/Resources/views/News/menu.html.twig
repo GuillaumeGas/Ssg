@@ -1,3 +1,5 @@
 <ul class="nav nav-pills nav-stacked">
-    <li>test</li>
+    {% for news in listNews %}
+        <li><a href="{{ path('ssg_news_view', {'id': news.id}) }}">{{ news.title }}</a> de <i>{{ news.author }}</i></li>
+    {% endfor %}
 </ul>
